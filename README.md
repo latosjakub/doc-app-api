@@ -214,8 +214,31 @@ In this file we will:
  - set trigger
  - add steps for runing testing and linting
  - set up dockerhub auth 
+checks.yml
+---
+name: Checks - it si gonna apear in github actions
+
+on: [push] - this is trigger
+
+jobs:
+    test-lint:
+        name: Test and Lint
+        runs-on: ubuntu-20.04 - this is operating system that we runs our jobs on 
+        steps:
+            - name: Login to Docker hub -this is name it is mainly for us to see what process are running rn
+              uses docker/login-activation@v1 - this is premade action provided in github actions repository
+              with:
+                username: ${{ secrets.DOCKERHUB_USER }} - This creadencials are the one we added in project secreats 
+                password: ${{ secrets.DOCKERHUB_TOKEN }}
+            - name: Checkout
+              uses: actions/checkout@v2
+            - name: Test
+              run: docker compose run --rm app sh -c "python manage.py test"
+            - name: Linting
+              run: docker compose run --rm app sh -c "flake8"
 
     
+Note: ubuntu-20.04 have docker-compose preinstalled but diferent systems can dont have it and than we need to add some steps to download this package
 
 
 
