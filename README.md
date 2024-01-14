@@ -467,3 +467,4 @@ __init__.py otherwise commands wont work.
                 time.sleep(1)
         self.stdout.write(self.style.SUCCESS('Database available!))
         aaaaaaaaaaaaaaaaaaaaaa
+        BBBBBBBBBBBBBBBBBBBBBBBBB
