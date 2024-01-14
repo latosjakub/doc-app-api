@@ -466,3 +466,4 @@ __init__.py otherwise commands wont work.
                 self.stdout.write('Database unavalible, waiting 1 sevond...')
                 time.sleep(1)
         self.stdout.write(self.style.SUCCESS('Database available!))
+        aaaaaaaaaaaaaaaaaaaaaa
