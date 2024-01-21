@@ -1,112 +1,153 @@
-# **doc-app-api**
-Documents app api source code.
+# **DOC-APP-API**
+# Description
 
- ## Starting GitHub Project
- 1. Start by going to the github/repositores and click New button to creation page.
- 2. Custimize your repository:
- * Repository name
- * Description
- * Choose this repo will be private or public
- * Add a README file
- * Add gitignore (python)
- * Choose a license (MIT)
- 3. Next click create repository. This will create repository and take you to repo page.
- 4. To copy repo to your local machine click a Code -> SSH and copy link for the repository.
- 5. Lunch terminal in your project folder and type
- git clone <ssh url>
- This will download the entire repository
+This application, built on Django and Django Rest Framework, functions as a documents platform, allowing users to quickly add, delete, and update posts. Treated as a personal notebook for exploring Django and DRF, the README outlines the entire project creation process and thoroughly explains its features. The app aims to improve information flow within organizations, promoting better organization and management.
+
+Technologies
+* Docker
+* Python
+* Django
+* Django Rest Framework
+* Postgresql
+
+Features
+* User Authentication
+* Managing users by Django Admin Page
+* Browseable API (using swagger)
+* Add, delete and update Posts
+* Tagging posts
+* Uploading Files
+
+
+
+
+ # Starting GitHub Project
+1. Begin by visiting the GitHub repositories and selecting the "New" button to initiate the creation page.
+2. Personalize your repository settings, inluding:
+    * Repository name
+    * Description
+    * Privacy setting
+    * Addition of a README file
+    * Inclusion of a Python .gitignore file
+    * Selection of a licence (MIT)
+3. Proceed to create the repository by clicking the "Create repository" button, which will generate the repository and redirect you to its page.
+4. To clone the repository to your local machine, click on "Code", select SSH option, and copy the provided link.
+5. Open the terminal in your project folder and enter the command:
+
+    `git clone <ssh url>`
 
 
  ## Authenticate with Dockerhub
- 1. Headover to dockerhub page
- 2. Go to account settings -> security
- 3. This allow us to create new access token when you authenticate to you github project with your dockerfile account
- 4. Click new access token:
-* gice a discription
-!! Remember you are able to see token only once !
- 5. To add a token to your repository go to repositpry page -> settings -> secreats and varables/actions
- 6. Click New Repository Secret
-    Give it a name(DOCKERHUB_TOKEN)
-    Pass the dockerhub token
- 7. Add your dockerfile username
-     Click New Repository Secret
-    Give it a name(DOCKERHUB_NAME)
-    Pass the dockerhub username
-This names are important bc we will be using them later in dockerfile
+1. Navigate to the Docker Hub page.
 
-## Configure Docker
-* Create a Dockerfile
-* Lists steps for creating image:
- - Choose a base image(python)
- - Install dependencies
- - Setup users
-* Setup Docker Compose(How our Docker image(s) should be used)
-Define our "services
-- name
-- Port mapping
-- Volume mappings
+2. Access your account settings and proceed to the security section.
 
-## Creating requirements.txt file
-This is a list with all python requirements for this project.
-Django >=4.1,<4.2 - This make supre tah the patch versioni s alvays up to date
+> This step allows the creation of a new access token for authentication in your GitHub project using your Docker Hub account.
 
-## Adding Dockerfile
-> Note: A dockerfile is simply a file that contains a list of instructions for Docker to build a Docker image. So you basically describe here all the dependencies that we need for our projext in out Dockerdile.
+3. Select the option to generate a new access token.
 
-Idea
-    add base file image
-    add who maintaine dockerfile
-    copy all nessesery files
-    install dependencies
-    create user
-    add venv to path
-    at the end of file switch to created user
-1. Create a new file in our project's root directory called Dockerfile.
+4. To incorporate the token into your repository, visit the repository page, then go to settings and secrets or variables/actions.
+
+5. Create a new repository secret:
+   * Provide a name (e.g., DOCKERHUB_TOKEN)
+   * Enter the Docker Hub token.
+
+6. Include your Dockerfile username:
+    Create another repository secret.
+    * Name it (e.g., DOCKERHUB_NAME).
+    * Enter your Docker Hub username.
+
+> These names are crucial as they will be utilized later in the Dockerfile.
+
+# Configure Docker
+1. Create a Dockerfile.
+2. Steps for image creation:
+    * Select a foundational image (e.g., Python).
+    * Install necessary dependencies.
+    * Configure user settings.
 
 
-    * From python:3.10-alpine - the image that we're going to unherit our Docker file from. In this case we're going to create our Docker file from th e python 3.10 image. The one we're going to user is the 3.10 alpine 3.18. Alpine image it's a lightweight version of Docker.
-    > Note: So with Docker we can basically build images on top of other imges. The benefit of this is that we can find an image tat has pretty much everything that we need for our project and then we can just add the customized bits that we need just for our specific product.
-    * MAINTAINER Jakub Latos - this tells us who maintaining this Docker image.
-    * ENV PYTHONUNBUFFERED 1 - it tells Python to run in unbuffered mode which is recommended when running Pythin within Docker containers.
-    > This allow us to see the output of your application (e.g django logs) in real time. This also ensures that no partial outpu is held in a buffer somewhere and never written in case the python application crashes.
-    *   copy all nessesery files
-        First create new dir named app in our repo then in dockerfile user
-        COPY ./requiremendts.txt /tmp/requirements.txt  (from to)
-        COPY ./app /app -it copies from our local machine the /app folder to the /app followed that we've created on an image.
-        > We first need to create dir named app in our local machine
-        WORKDIR /app it switches to /app as the default directory. All command will run from this dir by default se we dant have to specify fyll path everytime.
-        EXPOSE 8000 - expose port 8000 to our machine.
-    *  Installing packages and delating unnesesery files.
-        RUN python -m venv /py && \
-            /py/bin/pip install --upgrade pip && \
-            /py/bin/pip install -r /tmp/requirements.txt && \ - instaling things from requremendts.txt
-            rm -rf /tmp && \ - we are removing temp dir bc we want our dockerimage to be lightweight as possible
-            adduser \
-                --disabled-password \- Why we disavle password?
-                --no-create-home \ - we dont need home dir for user
-                django-user - name of user
+    * Establish Docker Compose specifications for utilizing Docker image(s):
+        * Define services.
+            * Specify service names.
+            * Map ports.
+            * Define volume mappings.
 
-        Note: The reason why we do this is for security purposes. If we don't do this then the image will run our application using the root account which is not recommended because that means if somebody compromises our application they then have root access to the whole image. Whereas if we create a separate user just for our application then this limits the scope that an attacker would have in our documentation.
 
-        ENV PATH="/py/bin:$PATH"
 
-        USER django-user - switching to django-user
-2. Creating .dockerignorefile
-3. Docker-compose configuration
-    Docker compose is a tool that allows us to run our Docker image easily form our project location.
-    So it allows us to easily manage the different sevices that make up our project. So for example one sevice mioght be python application
-    that we run. Another service might be the database.
-    1. Create a new file in our project's root directory called docker-compose.yml:
-    This is a yml file that contains the configuration for all of the services that make up our project.
-    * version "3" - version of Docker compose that we're going to be writing our file for.
-    *next we define services that make up our applicaton. Right now we only need one service for our Python Djano application
-    services:
-        app:
-            build:
-            context: .
-    What this is we're going to have a srvice called app and the build seection of the configuration we're going to set the context to is "."
-    which is our current directory that we're running docker-compose from.
-        ports:
+# Adding Dockerfile
+> A Dockerfile is essentially a document containing a set of instructions for Docker to construct a Docker image. In essence, it outlines all the dependencies required for our project within the Dockerfile.
+
+### 0. Steps
+
+* Include the base file image.
+* Specify the maintainer of the Dockerfile.
+* Copy all necessary files.
+* Install dependencies.
+* Create a user.
+* Add the virtual environment (venv) to the path.
+* Towards the end of the file, switch to the created user
+
+### 1 .Create a new file in our project's root directory called Dockerfile.
+
+
+From python:3.10-alpine`
+
+
+> Docker allows us to build images by starting with existing ones. This is handy because we can find an image that already has most of what we need and then just add the specific things our project requires.
+
+
+`MAINTAINER Jakub Latos` - this tells us who maintaining this Docker image.
+
+`ENV PYTHONUNBUFFERED 1` it tells Python to run in unbuffered mode which is recommended when running Pythin within Docker containers.
+> This allow us to see the output of your application (e.g django logs) in real time. This also ensures that no partial outpu is held in a buffer somewhere and never written in case the python application crashes.
+
+* copy all nessesery files. First create new dir named app in our repo then in dockerfile.
+
+`COPY ./requiremendts.txt /tmp/requirements.txt`
+`COPY ./app /app`
+
+
+`WORKDIR /app`
+> It sets the default directory to /app. As a result, all commands will automatically run from this directory by default, eliminating the need to specify the full path each time.
+
+
+`EXPOSE 8000`  expose port 8000 to our machine.
+*  Installing packages and delating unnesesery files and creating user.
+
+`RUN python -m venv /py && \
+    /py/bin/pip install --upgrade pip && \
+    /py/bin/pip install -r /tmp/requirements.txt && \
+    rm -rf /tmp && \
+    adduser \
+        --disabled-password \
+        --no-create-home \
+        django-user `
+
+The reason why we switch to django user is for security purposes. If we don't do this then the image will run our application using the root account which is not recommended because that means if somebody compromises our application they then have root access to the whole image. Whereas if we create a separate user just for our application then this limits the scope that an attacker would have in our documentation.
+
+`ENV PATH="/py/bin:$PATH"`
+
+`USER django-user` - switching to django-user
+
+### 2. Docker-compose configuration
+>Docker Compose helps us run our Docker image from our project folder, making it easy to handle different project services. For example, we might have a Python application or a database as separate services.
+
+
+1. Create a new file in our project's root directory called `docker-compose.yml`
+This is a yml file that contains the configuration for all of the services that make up our project.
+* version "3" - version of Docker compose that we're going to be writing our file for.
+
+
+* next we define services that make up our applicaton. Right now we only need one service for our Python Djano application
+services:
+  app:
+    build:
+      context: .
+
+What this is we're going to have a srvice called app and the build seection of the configuration we're going to set the context to is "."
+which is our current directory that we're running docker-compose from.
+    ports:
             - "8000:8000"
             volumes:
             - ./app:/app
@@ -514,3 +555,117 @@ NOte: get_user_model helper function is provided by django to get default user m
  So we get user model  using get_user_model than we use.objects which is reference to our manager thath we gonna create adn we calling create_user method onthe UserModel.
 
 We can't check the password the same way like we did checking an email. This is because the password is encrypted so we can only check it using the check_password function on our user model.
+
+Creating user model
+ first we add imports
+ from django.sb import models
+ from django.controb.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+ )
+
+ Then we create User class inherate AbstractBaseUser which provide funcionsality for auth system and Permissionsmixin.
+
+ next we define fields
+ email(unique),name,is_active(def.true),is_staff(def.false).
+
+ then we replace default field for authentication by USERNAME_FIELD = 'email' after that we assign UserManager which we will create in next step. objectss = UserManager()
+
+
+ Creating user manager
+
+ 1. Create Class UserManager inherate from BaseUserManager.
+
+ 2. In User manager we create method called create_user.
+
+
+    def create_user(self, email, password=None, **extra_fields):
+        """Create, save and return a new user."""
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self.db)
+
+        return user
+
+setting password to None give use an optiont o create non usable user which can be usefull for testing.
+
+**extra_fields let us provide keyward arguments. This is helpful when we adding new fields to user bc we dont need to adding them in create_user method. self.model is the same as defining new user bc this is manager which is user assigned to.
+
+we are using function set_password bc it hash the password. user.save(using=self._db) is for support multiple databases. Ofc in this project we will only using one.
+
+is settings of the project we need to define custom user model. at the bottom of the file add AUTH_USER_MODEL = 'core.User'
+
+after that we can make migrations
+
+warning If you see arror inconsistentMigrationsHistory you need to clear your volume to do that docker compose ls to see volumes and then docker volume rm name of volume
+
+Testing if the email for user is normalized
+
+Now that we have our create_user function we can add new feature to the function to normalize email address that user signup with. Secound part of email should be case-insensitive so we are going to make that part all lowercase.
+
+1. Inside Model Test calss in test_models.py add new function called test_new_user_email_normalized.
+
+2. Inside this function create an 2 dem list with email with mixed upper and lower case domain expencions on first possition and lower case on secound.
+
+3. Below, let's create loop and within the loop create user usind list of email and use assertion to see if emails are normalized correctly.
+
+
+
+so whole test function should looks like this.
+
+    def test_new_user_email_normalized(self):
+    """Test the email for new user is normalized."""
+    sample_emails = [
+        ['test1@EXAMPLE.COM', 'test1@example.com'],
+        ['Test2@EXample.com', 'Test2@example.com'],
+    ]
+    user = get_user_model().objects.create_user(email, 'testpass123')
+
+    self.assertEqual(user.email, email.lower())
+
+5. Save this test file and let's head to our terminal and let's run our unit test.
+
+Now add normalization with changind email  field for
+    user = self.model(email=self.normalize_email(email), **extra_fields)
+
+
+Next we're going to add validation to ensure that an email field has actually been provided when the create_user function is called. We want to make sure that if we call the create_user funtion and we don;t pass an email address we raise a Value Error that says the email address was not provided
+
+1. inside ModelTests class in test_models.py add new function called test_new_user_invalid_email.
+
+2. Type:
+    with self.assertRaise(ValueError):
+        get_user_model().objects.create_user(None, 'testpass123')
+
+    Anything that we run in here should raise the value error. And if it doesn't raise a ValueError then this test will fail.
+
+test create superuser
+1. Create test_create_superuser
+
+Now that we have our create_user function finished thare's just one more function that we need to add to our user model manager and that is the create_superuser function. create_superuser is a function used bt the Django CLI when we're creating new users using the command line. So we want to make sure it's included in our custom User model so that we can take advantage of the Django managment command for creatin a superuser. We are goung to test that a sueruser is create when we call create_superuser thatt is assigned the is_staff an the is_superuser settings.
+is_staff allows us to login to django admin site.
+is_superuser allows us to have access to everythin in django admin
+
+he reason why we didn't add is_superuser field in our User model but we add it here is is_superuser is included as part of the PermissionsMixin.
+
+    test_create_super_user(self):
+    """Test creating super user."""
+    super_user = get_user_model().objects.create_superuser(
+        email='testsuperuser@example.com',
+        password='testpass123'
+    )
+
+    self.assertTrue(uuser.is_staff)
+    self.assertTrue(user.is_superuser)
+
+add this to UserManager
+
+    def create_superuser(self, email, password):
+      """Create and save new superuser."""
+      user = self.create_user(email, password)
+      user.is_staff = True
+      user.is_superuser = True
+      user.save(using=self._db)
+
+      return user
